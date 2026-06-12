@@ -27,7 +27,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <!-- Tailwind CSS v3 CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -278,59 +278,44 @@
     <!-- JavaScript logic -->
     <script>
         // Generate QR Code dynamically with a custom logo overlay in the center
-        document.addEventListener("DOMContentLoaded", () => {
-            const canvas = document.getElementById("qrcode-canvas");
-            const text = "https://laibestudioai.com";
-            
-            // Render QR Code onto the canvas
-            QRCode.toCanvas(canvas, text, {
-                width: 160,
-                margin: 1,
-                color: {
-                    dark: "#000000",   // Dark parts of the QR code
-                    light: "#ffffff"   // High-contrast background (required for camera scanning)
-                },
-                errorCorrectionLevel: "H" // High error correction permits overlaying logo in center
-            }, function (error) {
-                if (error) {
-                    console.error("Error generating QR Code:", error);
-                    return;
-                }
-                
-                // Overlay logo on top of the generated QR Code canvas
-                const ctx = canvas.getContext("2d");
-                const logo = new Image();
-                logo.src = "15.png";
-                
-                logo.onload = function() {
-                    // Logo takes up ~24% of the QR code width (optimal for scanning safety)
-                    const logoSize = canvas.width * 0.24;
-                    const x = (canvas.width - logoSize) / 2;
-                    const y = (canvas.height - logoSize) / 2;
-                    
-                    // 1. Draw a white circular background mask to clear central QR pixels
-                    ctx.beginPath();
-                    ctx.arc(canvas.width / 2, canvas.height / 2, (logoSize / 2) + 3, 0, 2 * Math.PI);
-                    ctx.fillStyle = "#ffffff";
-                    ctx.fill();
-                    
-                    // 2. Draw a thin sleek electric-blue ring around the logo
-                    ctx.beginPath();
-                    ctx.arc(canvas.width / 2, canvas.height / 2, (logoSize / 2) + 1, 0, 2 * Math.PI);
-                    ctx.strokeStyle = "#0088ff";
-                    ctx.lineWidth = 1.5;
-                    ctx.stroke();
-                    
-                    // 3. Clip and draw the logo image inside the circle
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(canvas.width / 2, canvas.height / 2, logoSize / 2, 0, 2 * Math.PI);
-                    ctx.clip();
-                    ctx.drawImage(logo, x, y, logoSize, logoSize);
-                    ctx.restore();
-                };
-            });
-        });
+       document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById("qrcode-canvas");
+    const text = "https://laibestudioai.com"; //
+    
+    // Asegúrate de que se invoca así: "new QRCode"
+    new QRCode(canvas, {
+        text: text,
+        width: 160,
+        height: 160,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+    // Código para estampar la imagen encima
+    const ctx = canvas.getContext("2d");
+    const logo = new Image();
+    logo.src = "15.png"; //
+    
+    logo.onload = function() {
+        const logoSize = canvas.width * 0.24;
+        const x = (canvas.width - logoSize) / 2;
+        const y = (canvas.height - logoSize) / 2;
+        
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, (logoSize / 2) + 3, 0, 2 * Math.PI);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+        
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, (logoSize / 2) + 1, 0, 2 * Math.PI);
+        ctx.strokeStyle = "#0088ff";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        
+        ctx.drawImage(logo, x, y, logoSize, logoSize);
+    };
+});
 
         // Function to trigger a toast message
         function showToast(message) {
